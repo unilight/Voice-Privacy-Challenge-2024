@@ -19,7 +19,7 @@ jvs_db_root=/data/group1/z44476r/Corpora/jvs_ver1
 jtubespeech_db_root=/data/group1/z44476r/Corpora/JTubeSpeech-ASV
 
 # configs (in VPC, pre = no asv fine-tuning; post = with fine-tuning)
-anon_config=configs/anon_mcadams_jtube.yaml
+anon_config=configs/anon_mcadams_jvs_jtube.yaml
 oa_config=configs/eval_pre_jtube.yaml
 aa_config=configs/eval_post_jtube.yaml
 
@@ -34,7 +34,7 @@ force_compute=
 set -euo pipefail
 
 if [ ${stage} -le -1 ] && [ ${stop_stage} -ge -1 ]; then
-    log "stage -1: Model download and data preparation"
+    log "stage -1: Model download and data preparation. This might take a while."
 
     ./01b_download_evaluation_models.sh
 fi

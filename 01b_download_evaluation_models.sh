@@ -4,7 +4,7 @@ set -e
 
 source env.sh
 
-for model in asv_orig ser asr; do
+for model in asv_orig; do
     if [ ! -d "exp/$model" ]; then
         if [ ! -f .${model}.zip ]; then
             echo "Download pretrained $model models pre-trained..."
