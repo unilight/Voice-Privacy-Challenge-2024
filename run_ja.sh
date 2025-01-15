@@ -37,6 +37,11 @@ if [ ${stage} -le -1 ] && [ ${stop_stage} -ge -1 ]; then
     log "stage -1: Model download and data preparation. This might take a while."
 
     ./01b_download_evaluation_models.sh
+
+    python replace_db_root.py --wavscp data/jvs_train/wav.scp --old_db_root "/data/group1/z44476r/Corpora/jvs_ver1" --new_db_root "${jvs_db_root}"
+    python replace_db_root.py --wavscp data/jtubespeech-asv_train/wav.scp --old_db_root "/data/group1/z44476r/Corpora/JTubeSpeech-ASV" --new_db_root "${jtubespeech_db_root_db_root}"
+    python replace_db_root.py --wavscp data/jtubespeech-asv_test_2s_enrolls/wav.scp --old_db_root "/data/group1/z44476r/Corpora/JTubeSpeech-ASV" --new_db_root "${jtubespeech_db_root_db_root}"
+    python replace_db_root.py --wavscp data/jtubespeech-asv_test_2s_trials/wav.scp --old_db_root "/data/group1/z44476r/Corpora/JTubeSpeech-ASV" --new_db_root "${jtubespeech_db_root_db_root}"
 fi
 
 if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
