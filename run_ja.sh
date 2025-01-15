@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Copyright 2025 Wen-Chin Huang (Nagoya University)
+#  MIT License (https://opensource.org/licenses/MIT)
+
+log() {
+    local fname=${BASH_SOURCE[1]##*/}
+    echo -e "$(date '+%Y-%m-%dT%H:%M:%S') (${fname}:${BASH_LINENO[0]}:${FUNCNAME[1]}) $*"
+}
+
 source env.sh
 
 # basic settings
