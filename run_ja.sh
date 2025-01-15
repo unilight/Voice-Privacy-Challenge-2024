@@ -21,7 +21,7 @@ force_compute=
 # force_compute='--force_compute True'
 
 # shellcheck disable=SC1091
-. utils/parse_options.sh || exit 1;
+. ./parse_options.sh || exit 1;
 
 set -euo pipefail
 
