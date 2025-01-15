@@ -1,0 +1,32 @@
+data_dir: data
+exp_dir: exp
+
+anon_data_suffix: _mcadams # added to transform data/libri_dev/ to data/libri_dev_mcadams/ with data/libri_dev_mcadams/wav/*wav
+
+results_summary_path: !ref <exp_dir>/results_summary/eval_orig<anon_data_suffix>/results_orig.txt
+
+datasets:
+  - name: jtubespeech-asv_test_2s
+    data: jtubespeech-asv_test_2s
+    enrolls: [_enrolls]
+    trials: [_trials]
+
+
+eval_steps:  # all metrics in this list will be computed in the evaluation. Remove entry to skip
+  privacy:
+    - asv
+
+privacy:
+  asv:
+    dataset_name: [jtubespeech-asv_test_2s]
+    model_name: asv_orig
+    model_type: ecapa
+
+    evaluation:
+      model_dir: !ref <exp_dir>/<privacy[asv][model_name]>  # path to existing ASV model or output for trained ASV model
+      results_dir: !ref <exp_dir>/<privacy[asv][model_name]>  # path to save evaluation results
+      distance: cosine  # cosine or plda
+      plda:   # ignored if distance is not plda
+        model_dir: null  # path to trained PLDA or output of PLDA training
+        train_data_dir: null # path to PLDA training data
+        anon: null # trained on anonymized (true) or original (false) data

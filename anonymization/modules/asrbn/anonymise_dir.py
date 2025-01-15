@@ -83,8 +83,8 @@ def process_data(dataset_path: Path, anon_level: str, results_dir: Path, setting
 
     model = torch.hub.load("deep-privacy/SA-toolkit", "anonymization",
                            tag_version=tag_version,
-                           exit_if_new_version=True,
-                           force_reload=False,
+                           exit_if_new_version=False,
+                           force_reload=True,
                            trust_repo=True,
                            )
     model.to(device)

@@ -7,6 +7,7 @@ from speechbrain.utils.distributed import run_on_main
 
 # Dataset prep (parsing Libri-train-clean-360 and annotation into csv files)
 from .libri_prepare import prepare_libri  # noqa
+from .jtube_prepare import prepare_jtube  # noqa
 from .asv_dataset import ASVDatasetGenerator
 
 
@@ -97,6 +98,8 @@ def _convert_to_yaml(overrides):
 
 
 def train_asv_speaker_embeddings(config_file, hparams_file, run_opts):
+    #NOTE(unilight) the config file is in `evaluation/privacy/asv/asv_train/hparams`, not `configs/`
+
     # This flag enables the inbuilt cudnn auto-tuner
     torch.backends.cudnn.benchmark = True
 
@@ -109,20 +112,38 @@ def train_asv_speaker_embeddings(config_file, hparams_file, run_opts):
     with open(config_file) as f:
         hparams = load_hyperpyyaml(f, overrides)
 
-    run_on_main(
-        prepare_libri,
-        kwargs={
-            "data_folder": hparams["data_folder"],
-            "save_folder": hparams["save_folder"],
-            "splits": ["train", "dev"],
-            "split_ratio": [90, 10],
-            "num_utt": hparams["num_utt"],
-            "num_spk": hparams["num_spk"],
-            "seg_dur": hparams["sentence_len"],
-            "skip_prep": hparams["skip_prep"],
-            "utt_selected_ways": hparams["utt_selected_ways"]
-        },
-    )
+    if hparams["train_data_name"].startswith("libri"):
+        run_on_main(
+            prepare_libri,
+            kwargs={
+                "data_folder": hparams["data_folder"],
+                "save_folder": hparams["save_folder"],
+                "splits": ["train", "dev"],
+                "split_ratio": [90, 10],
+                "num_utt": hparams["num_utt"],
+                "num_spk": hparams["num_spk"],
+                "seg_dur": hparams["sentence_len"],
+                "skip_prep": hparams["skip_prep"],
+                "utt_selected_ways": hparams["utt_selected_ways"]
+            },
+        )
+    elif hparams["train_data_name"].startswith("jtubespeech"):
+        run_on_main(
+            prepare_jtube,
+            kwargs={
+                "data_folder": hparams["data_folder"],
+                "save_folder": hparams["save_folder"],
+                "splits": ["train", "dev"],
+                "split_ratio": [90, 10],
+                "num_utt": hparams["num_utt"],
+                "num_spk": hparams["num_spk"],
+                "seg_dur": hparams["sentence_len"],
+                "skip_prep": hparams["skip_prep"],
+                "utt_selected_ways": hparams["utt_selected_ways"]
+            },
+        )
+    else:
+        raise ValueError("Unknown train_data_name")
 
     # Dataset IO prep: creating Dataset objects and proper encodings for phones
     asv_dataset_gen = ASVDatasetGenerator(hparams)

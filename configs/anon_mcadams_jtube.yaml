@@ -1,0 +1,25 @@
+data_dir: data
+results_dir: wav # output example ./data/IEMOCAP_mcadams/wav
+
+pipeline: mcadams
+anon_suffix: !ref _<pipeline>
+
+datasets:
+  - name: jtubespeech-asv_train
+    data: jtubespeech-asv_train
+  - name: jtubespeech-asv_test_2s
+    data: jtubespeech-asv_test_2s
+    enrolls: [_enrolls]
+    trials: [_trials]
+
+modules:
+  anon_suffix: !ref <anon_suffix>
+  n_coeffs: 20
+  mc_coeff_min: 0.5
+  mc_coeff_max: 0.9
+  winLengthinms: 20
+  shiftLengthinms: 10
+  seed: 0
+  nj: 10
+  # anon_level_spk: [IEMOCAP_test, IEMOCAP_dev, libri_dev, libri_test]
+  anon_level_utt: [jtubespeech-asv_train, jtubespeech-asv_test_2s]

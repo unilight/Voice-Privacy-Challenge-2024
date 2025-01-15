@@ -22,15 +22,15 @@ from utils import setup_logger
 logger = setup_logger(__name__)
 
 
-def train_asv_eval(train_params, output_dir):
+def train_asv_eval(train_params, output_dir, train_data_name):
     backend = train_params.get('backend', 'speechbrain').lower()
     if backend == 'speechbrain':
-        asv_train_speechbrain(train_params=train_params, output_dir=output_dir)
+        asv_train_speechbrain(train_params=train_params, output_dir=output_dir, train_data_name=train_data_name)
     else:
         raise ValueError(f'Unknown backend {backend} for ASR evaluation. Available backends: speechbrain.')
 
 
-def asv_train_speechbrain(train_params, output_dir):
+def asv_train_speechbrain(train_params, output_dir, train_data_name):
     logger.info(f'Train ASV model: {output_dir}')
     hparams = {
         'pretrained_path': str(train_params['pretrained_model']),
@@ -42,13 +42,19 @@ def asv_train_speechbrain(train_params, output_dir):
         'number_of_epochs': train_params['epochs'],
         'data_folder': str(train_params['train_data_dir']),
         'output_folder': str(output_dir),
-        'num_workers': train_params['num_workers']
+        'num_workers': train_params['num_workers'],
+        'train_data_name': train_data_name
     }
 
     config = train_params['train_config']
 
     if train_params['num_spk'] == 'ALL':
-        hparams['out_n_neurons'] = 921
+        if train_data_name.startswith("libri"):
+            hparams['out_n_neurons'] = 921
+        elif train_data_name.startswith("jtubespeech"):
+            hparams['out_n_neurons'] = 979
+        else:
+            raise ValueError("Unknown train_data_name")
     else:
         hparams['out_n_neurons'] = int(train_params['num_spk'])
     sb_run_opts = deepcopy(run_opts)
